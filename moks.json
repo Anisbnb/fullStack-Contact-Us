@@ -1,0 +1,22 @@
+[
+{
+    "id": "hmimed1234r55",
+    "name": "hmimed",
+    "email": "hmimed@gmail.com",
+    "company": "Hmimed&Co",
+    "message":"salam alaykom, kayn khoubz yabes?",
+    "createdate": "2024-06-01T00:00:00Z",
+    "status": "new",
+    "remarks": "No remarks"
+},
+{
+    "id": "kdidour1234r55",
+    "name": "9didour",
+    "email": "9didour@gmail.com",
+    "company": "9didourSales",
+    "message":"Khorchef! khorchef! khorchef!",
+    "createdate": "2024-07-01T00:00:00Z",
+    "status": "new",
+    "remarks": "No remarks"
+}
+]
