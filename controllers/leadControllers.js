@@ -1,54 +1,169 @@
-const Lead = require("../models/lead");
-const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv");
-const { route } = require("../server");
-const express = require("express");
-const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET;
-const JWT_EXPIRE = process.env.JWT_EXPIRE;
+const Lead = require('../models/lead');
 
-const createLead = async (req, res) => {
+// Get all leads
+const getAllLeads = async (req, res) => {
   try {
-    const { name, email, company, message } = req.body;
-
-    const lead = new Lead({ name, email, company, message });
-
-    await lead.save();
-
-    res.status(201).json({ message: "Lead created", lead });
+    const leads = await Lead.find();
+    res.status(200).json({
+      success: true,
+      count: leads.length,
+      data: leads
+    });
   } catch (error) {
-    console.error("Error creating lead:", error);
+    console.error('Get all leads error:', error);
     res.status(500).json({
-      message: "Failed to create lead",
-      error: error.message,
+      success: false,
+      message: 'Failed to fetch leads',
+      error: error.message
     });
   }
 };
 
-const updateLead = async (req, res) => {
+// Get single lead by ID
+const getLeadById = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { status, remarks } = req.body;
-
-    const allowedStatuses = ["new", "contacted", "received", "done"];
-    if (status && !allowedStatuses.includes(status)) {
-      return res.status(400).json({ message: "Invalid status value" });
+    const lead = await Lead.findById(req.params.id);
+    
+    if (!lead) {
+      return res.status(404).json({
+        success: false,
+        message: 'Lead not found'
+      });
     }
 
-    const update = {};
-    if (status) update.status = status;
-    if (remarks !== undefined) update.remarks = remarks;
-
-    const lead = await Lead.findByIdAndUpdate(id, update, { new: true });
-    if (!lead) return res.status(404).json({ message: "Lead not found" });
-
-    res.status(200).json({ message: "Lead updated", lead });
+    res.status(200).json({
+      success: true,
+      data: lead
+    });
   } catch (error) {
-    console.error("Error updating lead:", error);
-    res
-      .status(500)
-      .json({ message: "Failed to update lead", error: error.message });
+    console.error('Get lead by ID error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch lead',
+      error: error.message
+    });
   }
 };
 
-module.exports = { createLead, updateLead };
+// Create new lead
+const createLead = async (req, res) => {
+  try {
+    const { name, email, company, message, status, remarks } = req.body;
+
+    // Basic validation
+    if (!name || !email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Name and email are required'
+      });
+    }
+
+    // Check if lead with email already exists
+    const existingLead = await Lead.findOne({ email });
+    if (existingLead) {
+      return res.status(400).json({
+        success: false,
+        message: 'Lead with this email already exists'
+      });
+    }
+
+    const newLead = new Lead({
+      name,
+      email,
+      company,
+      message,
+      status: status || 'new',
+      remarks
+    });
+
+    const savedLead = await newLead.save();
+
+    res.status(201).json({
+      success: true,
+      message: 'Lead created successfully',
+      data: savedLead
+    });
+  } catch (error) {
+    console.error('Create lead error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create lead',
+      error: error.message
+    });
+  }
+};
+
+// Update lead
+const updateLead = async (req, res) => {
+  try {
+    const { name, email, company, message, status, remarks } = req.body;
+
+    const updatedLead = await Lead.findByIdAndUpdate(
+      req.params.id,
+      {
+        name,
+        email,
+        company,
+        message,
+        status,
+        remarks
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedLead) {
+      return res.status(404).json({
+        success: false,
+        message: 'Lead not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Lead updated successfully',
+      data: updatedLead
+    });
+  } catch (error) {
+    console.error('Update lead error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update lead',
+      error: error.message
+    });
+  }
+};
+
+// Delete lead
+const deleteLead = async (req, res) => {
+  try {
+    const deletedLead = await Lead.findByIdAndDelete(req.params.id);
+
+    if (!deletedLead) {
+      return res.status(404).json({
+        success: false,
+        message: 'Lead not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Lead deleted successfully',
+      data: deletedLead
+    });
+  } catch (error) {
+    console.error('Delete lead error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete lead',
+      error: error.message
+    });
+  }
+};
+
+module.exports = {
+  getAllLeads,
+  getLeadById,
+  createLead,
+  updateLead,
+  deleteLead
+};
