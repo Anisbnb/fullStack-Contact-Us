@@ -10,6 +10,8 @@ const connectDB = require("./utils/connectDB");
 const authRoutes = require("./routes/auth");
 const leadRoutes = require("./routes/leads");
 
+const { createLead, updateLead } = require("./controllers/leadControllers");
+
 // Initialize Express application
 const app = express();
 
@@ -29,6 +31,11 @@ app.set('trust proxy', true);
 
 // API Routes
 app.use("/api/auth", authRoutes);
+// app.use("/api/", leadRoutes);
+app.use("/api/leads", createLead);
+// Default route for API health check
+app.use("/api/leads", updateLead);
+
 app.use("/api/", leadRoutes);
 
 // Default route for API health check
