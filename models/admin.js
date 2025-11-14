@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const adminSchema = new mongoose.Schema({
     id: Number,
@@ -7,4 +7,4 @@ const adminSchema = new mongoose.Schema({
     role: { type: String, enum: ['admin', 'superadmin'], default: 'admin' },
 });
 
-export default mongoose.model('Admin', adminSchema);
+module.exports = mongoose.model('Admin', adminSchema);

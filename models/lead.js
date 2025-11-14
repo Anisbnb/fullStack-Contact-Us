@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const leadSchema = new mongoose.Schema({
     id: Number,
@@ -11,4 +11,4 @@ const leadSchema = new mongoose.Schema({
     remarks: { type: String, default: 'No remarks' }
 });
 
-export default mongoose.model('Lead', leadSchema);
+module.exports = mongoose.model('Lead', leadSchema);
