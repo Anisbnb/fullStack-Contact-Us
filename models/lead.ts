@@ -1,16 +1,14 @@
-import { status } from "express/lib/response";
+import mongoose from 'mongoose';
 
-const mongoose = require('mongoose');
-
-const leadSchema = {
+const leadSchema = new mongoose.Schema({
     id: Number,
     name: String,
     email: String,
     company: String,
-    message:{ type: String, default: 'No message provided' },
+    message: { type: String, default: 'No message provided' },
     createdate: { type: Date, default: Date.now },
-    status: { type: String, enum: ['new', 'contacted', 'recieved', 'done'], default: 'new' },
+    status: { type: String, enum: ['new', 'contacted', 'received', 'done'], default: 'new' },
     remarks: { type: String, default: 'No remarks' }
-};
+});
 
-module.exports = mongoose.model('Lead', leadSchema);
+export default mongoose.model('Lead', leadSchema);

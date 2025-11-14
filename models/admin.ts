@@ -1,13 +1,10 @@
-import { status } from "express/lib/response";
+import mongoose from 'mongoose';
 
-const mongoose = require('mongoose');
-
-const adminSchema = {
+const adminSchema = new mongoose.Schema({
     id: Number,
-    
     email: String,
     password: String,
-    role: { type: String, enum: ['superadmin'], default: 'admin' },
-};
+    role: { type: String, enum: ['admin', 'superadmin'], default: 'admin' },
+});
 
-module.exports = mongoose.model('Admin', adminSchema);
+export default mongoose.model('Admin', adminSchema);
