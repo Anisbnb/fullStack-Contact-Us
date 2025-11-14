@@ -17,6 +17,10 @@ const app = express();
 
 // Middleware Configuration
 app.use(express.json()); // Parse JSON request bodies
+app.use(cors()); // Enable Cross-Origin Resource Sharing
+
+// API Routes
+app.use("/api/auth", authRoutes);
 
 // CORS configuration for external access
 app.use(cors({
