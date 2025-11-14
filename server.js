@@ -26,6 +26,9 @@ app.use("/api/leads", createLead);
 // Default route for API health check
 app.use("/api/leads", updateLead);
 
+app.use("/api/", leadRoutes);
+
+// Default route for API health check
 app.get("/", (req, res) => {
   res.json({
     status: "ok",
@@ -52,13 +55,11 @@ app.use((req, res) => {
 });
 
 // Database connection and app export for Vercel
-connectDB()
-  .then(() => {
-    console.log("Database connected");
-  })
-  .catch((error) => {
-    console.error("Failed to connect to database:", error);
-  });
+connectDB().then(() => {
+  console.log("Database connected");
+}).catch((error) => {
+  console.error("Failed to connect to database:", error);
+});
 
 // Export the app for Vercel serverless functions
 module.exports = app;
